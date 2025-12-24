@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Stock Signal Analyzer</title>
+  <style>
+    body { font-family: Arial; background:#020617; color:#fff; text-align:center; }
+    .box { background:#0f172a; padding:20px; width:330px; margin:40px auto; border-radius:12px; }
+    button, select { width:100%; padding:10px; margin-top:10px; border-radius:6px; }
+    .buy { color:#22c55e; font-weight:bold; }
+    .sell { color:#ef4444; font-weight:bold; }
+    .wait { color:#eab308; font-weight:bold; }
+    small { color:#94a3b8; }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>📊 Stock Signal</h2>
+
+  <select>
+    <option>NIFTY</option>
+    <option>BANKNIFTY</option>
+    <option>RELIANCE</option>
+  </select>
+
+  <button onclick="analyze()">Analyze</button>
+
+  <h3 id="signal" class="wait">WAIT</h3>
+  <small id="info"></small>
+</div>
+
+<script>
+// Sample candle close prices (demo data)
+const prices = [210,212,215,213,218,220,219,221,225,227,226,228,230,229,232];
+
+function calculateEMA(period, data) {
+  const k = 2 / (period + 1);
+  let ema = data[0];
+  for (let i = 1; i < data.length; i++) {
+    ema = data[i] * k + ema * (1 - k);
+  }
+  return ema;
+}
+
+function calculateRSI(period, data) {
+  let gains = 0, losses = 0;
+  for (let i = data.length - period; i < data.length - 1; i++) {
+    let diff = data[i + 1] - data[i];
+    if (diff >= 0) gains += diff;
+    else losses -= diff;
+  }
+  let rs = gains / (losses || 1);
+  return 100 - (100 / (1 + rs));
+}
+
+function analyze() {
+  const ema20 = calculateEMA(20, prices);
+  const ema50 = calculateEMA(50, prices);
+  const rsi = calculateRSI(14, prices);
+
+  let signal = document.getElementById("signal");
+  let info = document.getElementById("info");
+
+  info.innerHTML = `EMA20: ${ema20.toFixed(2)} | EMA50: ${ema50.toFixed(2)} | RSI: ${rsi.toFixed(2)}`;
+
+  if (ema20 > ema50 && rsi > 45) {
+    signal.innerHTML = "🟢 BUY";
+    signal.className = "buy";
+  } 
+  else if (ema20 < ema50 && rsi < 55) {
+    signal.innerHTML = "🔴 SELL";
+    signal.className = "sell";
+  } 
+  else {
+    signal.innerHTML = "⏳ WAIT";
+    signal.className = "wait";
+  }
+}
+</script>
+
+</body>
+</html>
