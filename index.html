@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Stock Signal Website</title>
+  <style>
+    body { font-family: Arial; background:#0f172a; color:#fff; text-align:center; }
+    .box { background:#1e293b; padding:20px; width:300px; margin:50px auto; border-radius:10px; }
+    select, button { width:100%; padding:10px; margin-top:10px; }
+    .buy { color:#22c55e; font-weight:bold; }
+    .sell { color:#ef4444; font-weight:bold; }
+    .wait { color:#facc15; font-weight:bold; }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>📈 Stock Signal</h2>
+
+  <select id="stock">
+    <option>NIFTY</option>
+    <option>BANKNIFTY</option>
+    <option>RELIANCE</option>
+  </select>
+
+  <select id="tf">
+    <option>5 min</option>
+    <option>15 min</option>
+  </select>
+
+  <button onclick="analyze()">Analyze</button>
+
+  <h3 id="result" class="wait">WAIT</h3>
+</div>
+
+<script>
+function analyze() {
+  let rsi = Math.floor(Math.random() * 100);
+  let emaFast = Math.random() * 100;
+  let emaSlow = Math.random() * 100;
+
+  let result = document.getElementById("result");
+
+  if (emaFast > emaSlow && rsi > 45) {
+    result.innerHTML = "🟢 BUY SIGNAL";
+    result.className = "buy";
+  } else if (emaFast < emaSlow && rsi < 55) {
+    result.innerHTML = "🔴 SELL SIGNAL";
+    result.className = "sell";
+  } else {
+    result.innerHTML = "⏳ WAIT";
+    result.className = "wait";
+  }
+}
+</script>
+
+</body>
+</html>
